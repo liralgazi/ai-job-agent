@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchFilters from "./components/SearchFilters";
 import JobList from "./components/JobList";
 import "./App.css";
@@ -10,6 +10,7 @@ function App() {
     workMode: "",
     level: "Junior",
     technology: "",
+    postedTime: "",
   });
 
   const [jobs, setJobs] = useState([]);
@@ -22,21 +23,23 @@ function App() {
       const params = new URLSearchParams({
         role: filters.role,
         location: filters.location,
+        postedTime: filters.postedTime,
       });
 
-      const response = await fetch(
-        `http://127.0.0.1:8000/jobs?${params}`
-      );
-
+      const response = await fetch(`http://127.0.0.1:8000/jobs?${params}`);
       const data = await response.json();
 
       setJobs(data.jobs);
     } catch (error) {
-      console.error(error);
+      console.error("Failed to fetch jobs:", error);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
+
+  useEffect(() => {
+    searchJobs();
+  }, []);
 
   return (
     <main className="page">

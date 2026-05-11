@@ -35,11 +35,19 @@ def is_location_match(selected_location: str, job_location: str) -> bool:
     return selected_location in job_location
 
 
+def is_posted_time_match(posted_time: str, job_days_ago: int) -> bool:
+    if not posted_time:
+        return True
+
+    return job_days_ago <= int(posted_time)
+
+
 def search_greenhouse_jobs(filters):
     jobs = []
 
     role = filters.get("role", "").lower()
     location = filters.get("location", "")
+    posted_time = filters.get("postedTime", "")
 
     for company in GREENHOUSE_COMPANIES:
         url = f"https://boards-api.greenhouse.io/v1/boards/{company}/jobs"
@@ -52,10 +60,16 @@ def search_greenhouse_jobs(filters):
                 title = job.get("title", "")
                 job_location = job.get("location", {}).get("name", "")
 
+                # Temporary normalized value until real posting dates are added
+                job_days_ago = 1
+
                 if role and role not in title.lower():
                     continue
 
                 if not is_location_match(location, job_location):
+                    continue
+
+                if not is_posted_time_match(posted_time, job_days_ago):
                     continue
 
                 jobs.append({
@@ -64,6 +78,9 @@ def search_greenhouse_jobs(filters):
                     "location": job_location,
                     "url": job.get("absolute_url"),
                     "source": "Greenhouse",
+                    "days_ago": job_days_ago,
+                    "is_new": job_days_ago <= 3,
+                    "level": "Junior",
                 })
 
         except Exception as e:

@@ -23,10 +23,12 @@ def root():
 def get_jobs(
     role: str = "",
     location: str = "",
+    postedTime: str = "",
 ):
     filters = {
         "role": role,
         "location": location,
+        "postedTime": postedTime,
     }
 
     greenhouse_jobs = search_greenhouse_jobs(filters)

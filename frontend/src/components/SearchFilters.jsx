@@ -32,6 +32,7 @@ function SearchFilters({ filters, onChange, onSearch }) {
 
         <select name="location" value={filters.location} onChange={handleChange}>
           <option value="">Any location</option>
+          <option value="Israel">Israel</option>
           <option value="Tel Aviv">Tel Aviv</option>
           <option value="Ramat Gan">Ramat Gan</option>
           <option value="Herzliya">Herzliya</option>

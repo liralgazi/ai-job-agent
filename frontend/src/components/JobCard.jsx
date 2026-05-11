@@ -1,22 +1,32 @@
 function JobCard({ job }) {
   return (
     <article className="job-card">
-      <div className="job-card-header">
-        <div>
+      <div className="job-top">
+        <div className="job-main-info">
           <h2>{job.title}</h2>
-          <p>{job.company}</p>
+
+          <div className="company-row">
+            <span className="company-name">{job.company}</span>
+            <span className="dot">•</span>
+            <span className="job-location">
+              {job.location || "Location not specified"}
+            </span>
+          </div>
         </div>
 
-        <span>{job.source}</span>
+        <div className="source-badge">{job.source}</div>
       </div>
 
-      <div className="job-meta">
-        <span>{job.location}</span>
+      <div className="job-footer">
+        <a
+          href={job.url}
+          target="_blank"
+          rel="noreferrer"
+          className="apply-button"
+        >
+          Apply Now
+        </a>
       </div>
-
-      <a href={job.url} target="_blank" rel="noreferrer">
-        Apply Now
-      </a>
     </article>
   );
 }

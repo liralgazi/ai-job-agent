@@ -1,7 +1,6 @@
 import { useState } from "react";
 import SearchFilters from "./components/SearchFilters";
 import JobList from "./components/JobList";
-import { mockJobs } from "./data/mockJobs";
 import "./App.css";
 
 function App() {
@@ -13,40 +12,30 @@ function App() {
     technology: "",
   });
 
-  const [jobs, setJobs] = useState(mockJobs);
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const searchJobs = () => {
-    const filteredJobs = mockJobs.filter((job) => {
-      const matchesRole =
-        !filters.role ||
-        job.title.toLowerCase().includes(filters.role.toLowerCase());
+  const searchJobs = async () => {
+    setLoading(true);
 
-      const matchesLocation =
-        !filters.location ||
-        job.location.toLowerCase().includes(filters.location.toLowerCase());
+    try {
+      const params = new URLSearchParams({
+        role: filters.role,
+        location: filters.location,
+      });
 
-      const matchesWorkMode =
-        !filters.workMode || job.workMode === filters.workMode;
-
-      const matchesLevel =
-        !filters.level || job.level === filters.level;
-
-      const matchesTechnology =
-        !filters.technology ||
-        job.technologies.some((tech) =>
-          tech.toLowerCase().includes(filters.technology.toLowerCase())
-        );
-
-      return (
-        matchesRole &&
-        matchesLocation &&
-        matchesWorkMode &&
-        matchesLevel &&
-        matchesTechnology
+      const response = await fetch(
+        `http://127.0.0.1:8000/jobs?${params}`
       );
-    });
 
-    setJobs(filteredJobs);
+      const data = await response.json();
+
+      setJobs(data.jobs);
+    } catch (error) {
+      console.error(error);
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -57,7 +46,11 @@ function App() {
         onSearch={searchJobs}
       />
 
-      <JobList jobs={jobs} />
+      {loading ? (
+        <div className="loading">Searching jobs...</div>
+      ) : (
+        <JobList jobs={jobs} />
+      )}
     </main>
   );
 }

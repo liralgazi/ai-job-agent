@@ -1,0 +1,16 @@
+# dependencies
+node_modules/
+
+# build
+dist/
+
+# env
+.env
+
+# mac
+.DS_Store
+
+# python
+venv/
+__pycache__/
+*.pyc

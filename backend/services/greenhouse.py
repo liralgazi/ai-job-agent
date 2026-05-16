@@ -28,6 +28,7 @@ def is_location_match(selected_location: str, job_location: str) -> bool:
             "netanya",
             "raanana",
             "yokneam",
+            "ramat gan",
         ]
 
         return any(keyword in job_location for keyword in israel_keywords)
